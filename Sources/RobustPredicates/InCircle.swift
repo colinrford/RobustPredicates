@@ -37,6 +37,10 @@ func inCircleExact(
   return expansionSign(expansionSum(expansionSum(aTerm, bTerm), cTerm))
 }
 
+/// Shewchuk 1997, §4.4, Table 5.
+@inlinable
+var iccErrBoundA: Double { (10 + 96 * shewchukEpsilon) * shewchukEpsilon }
+
 /// Returns where a point lies relative to the circle through three others, exactly.
 ///
 /// The circle passes through `a`, `b`, `c`, which must not be collinear. List them
