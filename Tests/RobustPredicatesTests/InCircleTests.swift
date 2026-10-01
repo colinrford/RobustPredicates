@@ -11,7 +11,7 @@ import Testing
 
 @Suite("inCircle")
 struct InCircleTests {
-
+  
   @Test func squareCornerGridMatchesOracle() {
     let a = SIMD2(1.0, 1.0), b = SIMD2(3.0, 1.0), c = SIMD2(3.0, 3.0)
     var wrong: [SIMD2<Double>] = []
@@ -26,7 +26,7 @@ struct InCircleTests {
     #expect(wrong.isEmpty, "first failures: \(wrong.prefix(3))")
     #expect(naiveWrong > 0, "the grid must defeat the unfiltered determinant")
   }
-
+  
   @Test(arguments: [121 as UInt64, 122, 123])
   func nearCocircularGridsMatchOracle(seed: UInt64) {
     var rng = SplitMix64(seed: seed)
@@ -45,7 +45,7 @@ struct InCircleTests {
     #expect(wrong == 0)
     #expect(naiveWrong > 0, "the grids must defeat the unfiltered determinant")
   }
-
+  
   // Each transform is exact, so an exact predicate's answer changes predictably.
   @Test(arguments: [131 as UInt64, 132])
   func exactSymmetriesHoldNearDegeneracy(seed: UInt64) {
@@ -69,7 +69,7 @@ struct InCircleTests {
     }
     #expect(seen.isSuperset(of: [.inside, .outside]), "a constant answer would satisfy every identity")
   }
-
+  
   @Test func rectangleCornersAreCocircular() {
     for w in 1...6 {
       for h in 1...6 {
@@ -83,7 +83,7 @@ struct InCircleTests {
       }
     }
   }
-
+  
   @Test func latticePointsOnARadiusFiveCircleAreCocircular() {
     let offsets: [SIMD2<Double>] = [
       SIMD2(5, 0), SIMD2(4, 3), SIMD2(3, 4), SIMD2(0, 5), SIMD2(-3, 4), SIMD2(-4, 3),
@@ -103,7 +103,7 @@ struct InCircleTests {
       }
     }
   }
-
+  
   @Test func oneUlpResolvesCocircularity() {
     let a = SIMD2(0.0, 0.0)
     let b = SIMD2(1.0, 0.0)
@@ -112,7 +112,7 @@ struct InCircleTests {
     #expect(inCircle(a, b, c, SIMD2(0.0, 1.0 + 1.0.ulp)) == .outside)
     #expect(inCircle(a, b, c, SIMD2(0.0, 1.0 - 0.5.ulp)) == .inside)
   }
-
+  
   @Test(arguments: [11 as UInt64, 12, 13])
   func randomIntegerInputsMatchOracle(seed: UInt64) {
     var rng = SplitMix64(seed: seed)
