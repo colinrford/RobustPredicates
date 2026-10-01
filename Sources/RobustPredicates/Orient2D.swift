@@ -8,7 +8,8 @@
 
 extension Orientation {
   /// The orientation for an orient2d determinant of sign `s`; positive means counterclockwise.
-  @inlinable init(sign s: Double) {
+  @inlinable
+  init(sign s: Double) {
     self = s > 0 ? .ccw : (s < 0 ? .cw : .collinear)
   }
 }
@@ -24,6 +25,10 @@ func orient2dExact(_ a: SIMD2<Double>, _ b: SIMD2<Double>, _ c: SIMD2<Double>) -
   let right = expansionProduct(acy, bcx)
   return expansionSign(expansionSum(left, expansionNegate(right)))
 }
+
+/// Shewchuk 1997, §4.3, Table 1.
+@inlinable
+var ccwErrBoundA: Double { (3 + 16 * shewchukEpsilon) * shewchukEpsilon }
 
 /// Returns the orientation of `a`, `b`, `c`, exactly.
 ///

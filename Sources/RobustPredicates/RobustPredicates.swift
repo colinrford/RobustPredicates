@@ -32,7 +32,7 @@ public enum CirclePosition: Sendable, Equatable {
 }
 
 /// The side of the plane through three points `a`, `b`, `c`, a fourth point `d` lies.
-/// 
+///
 /// Plane oriented by normal `(b−a)×(c−a)`.
 public enum PlaneSide: Sendable, Equatable {
   /// The point `d` is on the side the normal points toward.
@@ -44,7 +44,7 @@ public enum PlaneSide: Sendable, Equatable {
 }
 
 // Shewchuk's ε: the largest power of two with 1 + ε == 1.
-@usableFromInline let shewchukEpsilon = Double.ulpOfOne / 2
-@usableFromInline let ccwErrBoundA = (3.0 + 16.0 * shewchukEpsilon) * shewchukEpsilon
-@usableFromInline let iccErrBoundA = (10.0 + 96.0 * shewchukEpsilon) * shewchukEpsilon
-@usableFromInline let o3dErrBoundA = (7.0 + 56.0 * shewchukEpsilon) * shewchukEpsilon
+@inlinable
+var shewchukEpsilon: Double {
+  Double(sign: .plus, exponent: -(Double.significandBitCount + 1), significand: 1)
+}

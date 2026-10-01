@@ -40,6 +40,10 @@ func orient3dExact(
   return expansionSign(expansionSum(expansionSum(aTerm, bTerm), cTerm))
 }
 
+/// Shewchuk 1997, §4.4, Table 3.
+@inlinable
+var o3dErrBoundA: Double { (7 + 56 * shewchukEpsilon) * shewchukEpsilon }
+
 /// Returns which side of the plane through `a`, `b`, `c` the point `d` lies on, exactly.
 ///
 /// The plane is oriented by the normal (b − a) × (c − a); ``PlaneSide/above`` is the
