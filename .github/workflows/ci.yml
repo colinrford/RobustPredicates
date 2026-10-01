@@ -12,22 +12,29 @@ concurrency:
 
 jobs:
   macos:
-    name: macOS (${{ matrix.configuration }})
-    runs-on: macos-26
+    name: macOS ${{ matrix.arch }} (${{ matrix.configuration }})
+    runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
         configuration: [debug, release]
+        arch: [arm64, x86_64]
+        include:
+          - arch: arm64
+            runner: macos-26
+          # Without hardware FMA in the default x86_64 target, twoProd calls libm fma().
+          - arch: x86_64
+            runner: macos-26-intel
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Toolchain
         run: xcrun swift --version
       - name: Build (warnings as errors)
-        run: xcrun swift build -c ${{ matrix.configuration }} -Xswiftc -warnings-as-errors
+        run: xcrun swift build -c ${{ matrix.configuration }} --build-tests -Xswiftc -enable-testing -Xswiftc -warnings-as-errors
       # Release matters here: error-free transforms break if the optimizer
       # reassociates or contracts floating-point ops.
       - name: Test
-        run: xcrun swift test -c ${{ matrix.configuration }} -Xswiftc -enable-testing
+        run: xcrun swift test -c ${{ matrix.configuration }} -Xswiftc -enable-testing -Xswiftc -warnings-as-errors
 
   linux:
     name: Linux (${{ matrix.configuration }})
@@ -38,10 +45,18 @@ jobs:
       matrix:
         configuration: [debug, release]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Toolchain
         run: swift --version
       - name: Build (warnings as errors)
-        run: swift build -c ${{ matrix.configuration }} -Xswiftc -warnings-as-errors
+        run: swift build -c ${{ matrix.configuration }} --build-tests -Xswiftc -enable-testing -Xswiftc -warnings-as-errors
       - name: Test
-        run: swift test -c ${{ matrix.configuration }} -Xswiftc -enable-testing
+        run: swift test -c ${{ matrix.configuration }} -Xswiftc -enable-testing -Xswiftc -warnings-as-errors
+
+  thread-sanitizer:
+    name: Thread Sanitizer
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v7
+      - name: Test
+        run: xcrun swift test --sanitize=thread -Xswiftc -warnings-as-errors
