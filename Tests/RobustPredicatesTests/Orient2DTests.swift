@@ -11,7 +11,7 @@ import Testing
 
 @Suite("orient2d")
 struct Orient2DTests {
-
+  
   // Kettner, Mehlhorn, Pion, Schirra & Yap 2008, §4: p = (0.5 + i·u, 0.5 + j·u)
   // with u = 2⁻⁵³, against q = (12, 12) and r = (24, 24).
   @Test func kettnerGridMatchesOracle() {
@@ -28,7 +28,7 @@ struct Orient2DTests {
     #expect(wrong.isEmpty, "first failures: \(wrong.prefix(3))")
     #expect(naiveWrong > 0, "the grid must defeat the unfiltered determinant")
   }
-
+  
   @Test(arguments: [101 as UInt64, 102, 103])
   func nearCollinearGridsMatchOracle(seed: UInt64) {
     var rng = SplitMix64(seed: seed)
@@ -47,7 +47,7 @@ struct Orient2DTests {
     #expect(wrong == 0)
     #expect(naiveWrong > 0, "the grids must defeat the unfiltered determinant")
   }
-
+  
   // Each transform is exact, so an exact predicate's answer changes predictably.
   @Test(arguments: [111 as UInt64, 112])
   func exactSymmetriesHoldNearDegeneracy(seed: UInt64) {
@@ -71,7 +71,7 @@ struct Orient2DTests {
     }
     #expect(seen.isSuperset(of: [.ccw, .cw]), "a constant answer would satisfy every identity")
   }
-
+  
   @Test(arguments: [21 as UInt64, 22])
   func collinearIntegerTriplesAreCollinear(seed: UInt64) {
     var rng = SplitMix64(seed: seed)
@@ -86,7 +86,7 @@ struct Orient2DTests {
       #expect(orient2d(a, a + t * v, a + s * v + SIMD2(-v.y, v.x)) == .ccw)
     }
   }
-
+  
   // At this magnitude the products are exact in Double, so this only checks
   // the fast path's arithmetic; the grids above exercise the exact fallback.
   @Test(arguments: [7 as UInt64, 8, 9])

@@ -25,7 +25,7 @@ private func offPlaneSideIsConsistent(
 
 @Suite("orient3d")
 struct Orient3DTests {
-
+  
   @Test(arguments: [141 as UInt64, 142, 143])
   func nearCoplanarGridsMatchOracle(seed: UInt64) {
     var rng = SplitMix64(seed: seed)
@@ -45,7 +45,7 @@ struct Orient3DTests {
     #expect(wrong == 0)
     #expect(naiveWrong > 0, "the grids must defeat the unfiltered determinant")
   }
-
+  
   // Each transform is exact, so an exact predicate's answer changes predictably.
   @Test(arguments: [151 as UInt64, 152])
   func exactSymmetriesHoldNearDegeneracy(seed: UInt64) {
@@ -70,7 +70,7 @@ struct Orient3DTests {
     }
     #expect(seen.isSuperset(of: [.above, .below]), "a constant answer would satisfy every identity")
   }
-
+  
   @Test(arguments: [61 as UInt64, 62])
   func constantZPointsAreCoplanar(seed: UInt64) {
     var rng = SplitMix64(seed: seed)
@@ -85,7 +85,7 @@ struct Orient3DTests {
       #expect(offPlaneSideIsConsistent(a, b, c, d))
     }
   }
-
+  
   @Test(arguments: [63 as UInt64, 64])
   func tiltedIntegerPlanePointsAreCoplanar(seed: UInt64) {
     var rng = SplitMix64(seed: seed)
@@ -100,7 +100,7 @@ struct Orient3DTests {
       #expect(offPlaneSideIsConsistent(a, b, c, d))
     }
   }
-
+  
   @Test(arguments: [51 as UInt64, 52, 53])
   func randomIntegerInputsMatchOracle(seed: UInt64) {
     var rng = SplitMix64(seed: seed)

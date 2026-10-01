@@ -114,7 +114,7 @@ private func illegalEdges(
 
 @Suite("Parallel workloads")
 struct WorkloadTests {
-
+  
   @Test(arguments: [171 as UInt64, 172])
   func parallelHullIsExact(seed: UInt64) async {
     var rng = SplitMix64(seed: seed)
@@ -127,13 +127,13 @@ struct WorkloadTests {
     #expect(!isExactHull(convexHull(points, orient: naiveOrient2d), of: points))
     #expect(probe.peak >= 2, "the strips must have run at the same time")
   }
-
+  
   @Test func parallelDelaunayCheckIsExact() async {
     let t = rotatedGrid(k: 16, cos: 4, sin: 3)
     let edges = t.interiorEdges
     let probe = OverlapProbe()
     let illegal = await illegalEdges(t, edges, chunks: 8, probe: probe)
-
+    
     let p = t.points
     let oracle = edges.map { inCircleOracle(p[$0.u], p[$0.v], p[$0.w], p[$0.x]) }
     #expect(illegal == Set(oracle.indices.filter { oracle[$0] == .inside }))
@@ -141,7 +141,7 @@ struct WorkloadTests {
     #expect(edges.map { naiveInCircle(p[$0.u], p[$0.v], p[$0.w], p[$0.x]) } != oracle)
     #expect(probe.peak >= 2, "the chunks must have run at the same time")
   }
-
+  
   // Unrotated, every diagonal's four points are exactly cocircular, so the
   // triangulation is Delaunay, just not uniquely.
   @Test func unrotatedGridIsDelaunay() async {
@@ -150,7 +150,7 @@ struct WorkloadTests {
     let edges = t.interiorEdges
     let illegal = await illegalEdges(t, edges, chunks: 8, probe: OverlapProbe())
     #expect(illegal.isEmpty)
-
+    
     let p = t.points
     let onCircle = edges.count { inCircle(p[$0.u], p[$0.v], p[$0.w], p[$0.x]) == .on }
     #expect(onCircle == (2 * k) * (2 * k))
