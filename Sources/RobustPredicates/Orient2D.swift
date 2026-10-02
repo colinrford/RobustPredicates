@@ -32,8 +32,10 @@ var ccwErrBoundA: Double { (3 + 16 * shewchukEpsilon) * shewchukEpsilon }
 
 /// Returns the orientation of `a`, `b`, `c`, exactly.
 ///
-/// The result is exact for all finite inputs, provided no intermediate value
-/// overflows or underflows. Orientations assume the usual y-up axes.
+/// The result is exact when every coordinate is finite and either 0 or of
+/// magnitude in [2⁻⁴⁵⁹, 2⁵¹⁰].
+///
+/// Orientations assume the usual y-up axes.
 ///
 /// - Parameters:
 ///   - a: The first point.
