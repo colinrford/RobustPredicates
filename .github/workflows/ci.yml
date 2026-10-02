@@ -53,6 +53,14 @@ jobs:
       - name: Test
         run: swift test -c ${{ matrix.configuration }} -Xswiftc -enable-testing -Xswiftc -warnings-as-errors
 
+  examples:
+    name: Examples
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build PredicateMap
+        run: xcrun swift build --package-path Examples/PredicateMap -Xswiftc -warnings-as-errors
+
   thread-sanitizer:
     name: Thread Sanitizer
     runs-on: macos-26
