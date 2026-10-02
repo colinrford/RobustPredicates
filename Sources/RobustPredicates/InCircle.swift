@@ -45,8 +45,10 @@ var iccErrBoundA: Double { (10 + 96 * shewchukEpsilon) * shewchukEpsilon }
 ///
 /// The circle passes through `a`, `b`, `c`, which must not be collinear. List them
 /// counterclockwise; for a clockwise triangle, ``CirclePosition/inside`` and
-/// ``CirclePosition/outside`` swap. The result is exact for all finite inputs,
-/// provided no intermediate value overflows or underflows.
+/// ``CirclePosition/outside`` swap.
+///
+/// The result is exact when every coordinate is finite and either 0 or of
+/// magnitude in [2⁻²⁰³, 2²⁵⁴].
 ///
 /// - Parameters:
 ///   - a: A point on the circle.

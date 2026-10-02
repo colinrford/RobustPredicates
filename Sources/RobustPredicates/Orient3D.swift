@@ -48,8 +48,10 @@ var o3dErrBoundA: Double { (7 + 56 * shewchukEpsilon) * shewchukEpsilon }
 ///
 /// The plane is oriented by the normal (b − a) × (c − a); ``PlaneSide/above`` is the
 /// side it points to. If `a`, `b`, `c` are collinear, the plane is undefined and every
-/// `d` is reported ``PlaneSide/on``. The result is exact for all finite inputs,
-/// provided no intermediate value overflows or underflows.
+/// `d` is reported ``PlaneSide/on``.
+///
+/// The result is exact when every coordinate is finite and either 0 or of
+/// magnitude in [2⁻²⁸⁸, 2³³⁹].
 ///
 /// - Parameters:
 ///   - a: A point on the plane.
