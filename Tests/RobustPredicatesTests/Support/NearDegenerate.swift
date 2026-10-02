@@ -33,9 +33,9 @@ func nearCollinearTriple(
 
 /// Four rounded points on one circle.
 func nearCocircularQuad(
-  _ rng: inout SplitMix64
+  _ rng: inout SplitMix64, centers: ClosedRange<Double> = -1...1
 ) -> (a: SIMD2<Double>, b: SIMD2<Double>, c: SIMD2<Double>, d: SIMD2<Double>) {
-  let center = randomPoint(&rng, in: -1...1)
+  let center = randomPoint(&rng, in: centers)
   let radius = Double.random(in: 0.5...2, using: &rng)
   func onCircle() -> SIMD2<Double> {
     let t = Double.random(in: -4...4, using: &rng)
@@ -46,11 +46,11 @@ func nearCocircularQuad(
 
 /// A rounded point d in the plane through a, b, c.
 func nearCoplanarQuad(
-  _ rng: inout SplitMix64
+  _ rng: inout SplitMix64, in range: ClosedRange<Double> = -1...1
 ) -> (a: SIMD3<Double>, b: SIMD3<Double>, c: SIMD3<Double>, d: SIMD3<Double>) {
-  let a = randomPoint3(&rng, in: -1...1)
-  let b = randomPoint3(&rng, in: -1...1)
-  let c = randomPoint3(&rng, in: -1...1)
+  let a = randomPoint3(&rng, in: range)
+  let b = randomPoint3(&rng, in: range)
+  let c = randomPoint3(&rng, in: range)
   let s = Double.random(in: 0...1, using: &rng)
   let t = Double.random(in: 0...1, using: &rng)
   return (a, b, c, a + (b - a) * s + (c - a) * t)
