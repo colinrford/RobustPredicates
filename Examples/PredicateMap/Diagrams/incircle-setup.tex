@@ -1,0 +1,19 @@
+\documentclass[dvisvgm, tikz, border=0pt]{standalone}
+\usetikzlibrary{backgrounds}
+
+\begin{document}
+\begin{tikzpicture}[x=0.2cm, y=0.2cm, font=\small,
+    show background rectangle, inner frame sep=0pt,
+    background rectangle/.style={fill=white}]
+  \path[use as bounding box] (-6, -29) rectangle (30, 7);
+  \draw[gray, thick] (12, -11) circle ({11.5 * sqrt(2)});
+  \fill (0.5, -22.5) circle (2.4pt) node[left=3pt] {$a$};
+  \fill (23.5, -22.5) circle (2.4pt) node[right=3pt] {$b$};
+  \fill (23.5, 0.5) circle (2.4pt) node[right=3pt] {$c$};
+  \draw[thick] (-0.5, -0.5) rectangle (1.5, 1.5);
+  \node[left=3pt] at (-0.5, 0.5) {$d$};
+  \node[align=center] at (12, -11)
+    {$d$: $256 \times 256$ grid from $(0.5, 0.5)$\\ spacing $2^{-53}$\\[6pt]
+     $a = (0.5, -22.5)$\\ $b = (23.5, -22.5)$\\ $c = (23.5, 0.5)$};
+\end{tikzpicture}
+\end{document}
