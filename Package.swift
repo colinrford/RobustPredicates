@@ -23,6 +23,7 @@ let package = Package(
     .testTarget(
       name: "RobustPredicatesTests",
       dependencies: ["RobustPredicates"],
+      resources: [.copy("StagedPredicates")],
       swiftSettings: [.strictMemorySafety()]
     ),
   ]
