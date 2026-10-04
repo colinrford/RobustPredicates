@@ -20,9 +20,12 @@ extension CirclePosition {
 func inCircleExact(
   _ a: SIMD2<Double>, _ b: SIMD2<Double>, _ c: SIMD2<Double>, _ d: SIMD2<Double>
 ) -> Double {
-  let adx = twoDiffE(a.x, d.x), ady = twoDiffE(a.y, d.y)
-  let bdx = twoDiffE(b.x, d.x), bdy = twoDiffE(b.y, d.y)
-  let cdx = twoDiffE(c.x, d.x), cdy = twoDiffE(c.y, d.y)
+  let adx = twoDiffE(a.x, d.x)
+  let ady = twoDiffE(a.y, d.y)
+  let bdx = twoDiffE(b.x, d.x)
+  let bdy = twoDiffE(b.y, d.y)
+  let cdx = twoDiffE(c.x, d.x)
+  let cdy = twoDiffE(c.y, d.y)
 
   func cross(_ ux: [Double], _ uy: [Double], _ vx: [Double], _ vy: [Double]) -> [Double] {
     expansionSum(expansionProduct(ux, vy), expansionNegate(expansionProduct(uy, vx)))
@@ -60,15 +63,21 @@ var iccErrBoundA: Double { (10 + 96 * shewchukEpsilon) * shewchukEpsilon }
 public func inCircle(
   _ a: SIMD2<Double>, _ b: SIMD2<Double>, _ c: SIMD2<Double>, _ d: SIMD2<Double>
 ) -> CirclePosition {
-  let adx = a.x - d.x, ady = a.y - d.y
-  let bdx = b.x - d.x, bdy = b.y - d.y
-  let cdx = c.x - d.x, cdy = c.y - d.y
+  let adx = a.x - d.x
+  let ady = a.y - d.y
+  let bdx = b.x - d.x
+  let bdy = b.y - d.y
+  let cdx = c.x - d.x
+  let cdy = c.y - d.y
   
-  let bdxcdy = bdx * cdy, cdxbdy = cdx * bdy
+  let bdxcdy = bdx * cdy
+  let cdxbdy = cdx * bdy
   let alift = adx * adx + ady * ady
-  let cdxady = cdx * ady, adxcdy = adx * cdy
+  let cdxady = cdx * ady
+  let adxcdy = adx * cdy
   let blift = bdx * bdx + bdy * bdy
-  let adxbdy = adx * bdy, bdxady = bdx * ady
+  let adxbdy = adx * bdy
+  let bdxady = bdx * ady
   let clift = cdx * cdx + cdy * cdy
   
   let det = alift * (bdxcdy - cdxbdy)
@@ -76,9 +85,7 @@ public func inCircle(
   + clift * (adxbdy - bdxady)
   
   // Error bound: Shewchuk 1997, §4.4, Table 5; the permanent is α_a + α_b + α_c.
-  let permanent = (abs(bdxcdy) + abs(cdxbdy)) * alift
-  + (abs(cdxady) + abs(adxcdy)) * blift
-  + (abs(adxbdy) + abs(bdxady)) * clift
+  let permanent = (abs(bdxcdy) + abs(cdxbdy)) * alift + (abs(cdxady) + abs(adxcdy)) * blift + (abs(adxbdy) + abs(bdxady)) * clift
   let errbound = iccErrBoundA * permanent
   if det > errbound || -det > errbound {
     return CirclePosition(sign: det)

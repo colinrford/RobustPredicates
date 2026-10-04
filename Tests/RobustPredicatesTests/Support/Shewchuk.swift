@@ -18,6 +18,14 @@ func shewchukOrient2d(_ a: SIMD2<Double>, _ b: SIMD2<Double>, _ c: SIMD2<Double>
   return Orientation(sign: unsafe orient2dC(&pa, &pb, &pc))
 }
 
+func shewchukOrient2dAdapt(
+  _ a: SIMD2<Double>, _ b: SIMD2<Double>, _ c: SIMD2<Double>, detsum: Double
+) -> Double {
+  _ = initialized
+  var pa = [a.x, a.y], pb = [b.x, b.y], pc = [c.x, c.y]
+  return unsafe orient2dAdaptC(&pa, &pb, &pc, detsum: detsum)
+}
+
 func shewchukInCircle(
   _ a: SIMD2<Double>, _ b: SIMD2<Double>, _ c: SIMD2<Double>, _ d: SIMD2<Double>
 ) -> CirclePosition {

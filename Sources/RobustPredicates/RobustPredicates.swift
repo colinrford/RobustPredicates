@@ -48,3 +48,7 @@ public enum PlaneSide: Sendable, Equatable {
 var shewchukEpsilon: Double {
   Double(sign: .plus, exponent: -(Double.significandBitCount + 1), significand: 1)
 }
+
+/// placeholder
+@inlinable
+var resultErrBound: Double { (3 + 8 * shewchukEpsilon) * shewchukEpsilon }
