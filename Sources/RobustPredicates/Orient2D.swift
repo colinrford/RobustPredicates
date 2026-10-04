@@ -14,21 +14,89 @@ extension Orientation {
   }
 }
 
-// MARK: - Exact fallbacks (fully exact from the original coordinates)
+// MARK: - Exact
 
 /// The orient2d determinant, computed exactly; only the sign of the result is meaningful.
 @usableFromInline
 func orient2dExact(_ a: SIMD2<Double>, _ b: SIMD2<Double>, _ c: SIMD2<Double>) -> Double {
-  let acx = twoDiffE(a.x, c.x), acy = twoDiffE(a.y, c.y)
-  let bcx = twoDiffE(b.x, c.x), bcy = twoDiffE(b.y, c.y)
+  let acx = twoDiffE(a.x, c.x)
+  let acy = twoDiffE(a.y, c.y)
+  let bcx = twoDiffE(b.x, c.x)
+  let bcy = twoDiffE(b.y, c.y)
   let left = expansionProduct(acx, bcy)
   let right = expansionProduct(acy, bcx)
   return mostSignificantComponent(expansionSum(left, expansionNegate(right)))
 }
 
+// MARK: - Error bounds
+
 /// Shewchuk 1997, §4.3, Table 1.
 @inlinable
 var ccwErrBoundA: Double { (3 + 16 * shewchukEpsilon) * shewchukEpsilon }
+
+@inlinable
+var ccwErrBoundB: Double { (2 + 12 * shewchukEpsilon) * shewchukEpsilon }
+
+@inlinable
+var ccwErrBoundC: Double { (9 + 64 * shewchukEpsilon) * shewchukEpsilon * shewchukEpsilon }
+
+// MARK: - Adaptive
+
+/// placeholder
+@usableFromInline
+func orient2dAdapt(_ a: SIMD2<Double>, _ b: SIMD2<Double>, _ c: SIMD2<Double>, detsum: Double) -> Double {
+
+  let acx = a.x - c.x
+  let bcx = b.x - c.x
+  let acy = a.y - c.y
+  let bcy = b.y - c.y
+
+  let (detleft, detlefttail) = twoProd(acx, bcy)
+  let (detright, detrighttail) = twoProd(acy, bcx)
+
+  let (b3, b2, b1, b0) = twoTwoDiff(detleft, detlefttail, detright, detrighttail)
+  let bExp = [b0, b1, b2, b3]
+
+  var det = estimate(bExp)
+  var errbound = ccwErrBoundB * detsum
+  if ((det >= errbound) || (-det >= errbound)) {
+    return det;
+  }
+
+  let acxtail = twoDiffTail(a.x, c.x, acx)
+  let bcxtail = twoDiffTail(b.x, c.x, bcx)
+  let acytail = twoDiffTail(a.y, c.y, acy)
+  let bcytail = twoDiffTail(b.y, c.y, bcy)
+
+  if ((acxtail == 0.0) && (acytail == 0.0) && (bcxtail == 0.0) && (bcytail == 0.0)) {
+    return det;
+  }
+
+  errbound = ccwErrBoundC * detsum + resultErrBound * abs(det)
+  det += (acx * bcytail + bcy * acxtail) - (acy * bcxtail + bcx * acytail)
+  if ((det >= errbound) || (-det >= errbound)) {
+    return det
+  }
+
+  let (s1, s0) = twoProd(acxtail, bcy)
+  let (t1, t0) = twoProd(acytail, bcx)
+  let (u3, u2, u1, u0) = twoTwoDiff(s1, s0, t1, t0)
+  let c1 = expansionSum(bExp, [u0, u1, u2, u3])
+
+  let (s1b, s0b) = twoProd(acx, bcytail)
+  let (t1b, t0b) = twoProd(acy, bcxtail)
+  let (v3, v2, v1, v0) = twoTwoDiff(s1b, s0b, t1b, t0b)
+  let c2 = expansionSum(c1, [v0, v1, v2, v3])
+
+  let (s1c, s0c) = twoProd(acxtail, bcytail)
+  let (t1c, t0c) = twoProd(acytail, bcxtail)
+  let (w3, w2, w1, w0) = twoTwoDiff(s1c, s0c, t1c, t0c)
+  let d = expansionSum(c2, [w0, w1, w2, w3])
+
+  return d[d.count - 1]
+}
+
+// MARK: Orient2D Predicate
 
 /// Returns the orientation of `a`, `b`, `c`, exactly.
 ///
@@ -65,5 +133,5 @@ public func orient2d(_ a: SIMD2<Double>, _ b: SIMD2<Double>, _ c: SIMD2<Double>)
   // Error bound: Shewchuk 1997, §4.3, Table 1, where detsum is |x₅| + |x₆|.
   let errbound = ccwErrBoundA * detsum
   if det >= errbound || -det >= errbound { return Orientation(sign: det) }
-  return Orientation(sign: orient2dExact(a, b, c))
+  return Orientation(sign: orient2dAdapt(a, b, c, detsum: detsum))
 }
