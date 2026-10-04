@@ -12,8 +12,14 @@ I will continue adding more to this Readme as the package itself fills out. In t
 | `orient2d` | ![orient2d setup](docs/images/orient2d-setup.svg) | ![naive orient2d](docs/images/orient2d-naive.png) | ![robust orient2d](docs/images/orient2d-robust.png) |
 | `inCircle` | ![inCircle setup](docs/images/incircle-setup.svg) | ![naive inCircle](docs/images/incircle-naive.png) | ![robust inCircle](docs/images/incircle-robust.png) |
 
+The color
+- red refers to positive orientation, or counterclockwise, or inside,
+- green refers to collinear, or cocircular,
+- blue refers to negative orientation, or clockwise, or outside.
+
 ## Links
 - [CMU's Quake Group](https://www.cmu.edu/cee/research/quake/)
 - [Adaptive Precision Floating-Point Arithmetic and Fast Robust Geometric Predicates](https://people.eecs.berkeley.edu/~jrs/papers/robustr.pdf)
 - [Original `C` code](https://www.cs.cmu.edu/afs/cs/project/quake/public/code/predicates.c), redundantly linked again from the first paragraph. It is public domain.
-- [Test data](https://www.cs.cmu.edu/afs/cs/project/pscico/pscico/src/arithmetic/compiler1/test/)
+- [Test data](https://www.cs.cmu.edu/afs/cs/project/pscico/pscico/src/arithmetic/compiler1/test/) from Nanevski, Blelloch & Harper
+- [Automatic Generation of Staged Geometric Predicates](https://link.springer.com/article/10.1023/A:1025876920522) by Nanevski et al. (2003)
