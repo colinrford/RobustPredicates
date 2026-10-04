@@ -20,9 +20,14 @@ let package = Package(
       name: "RobustPredicates",
       swiftSettings: [.strictMemorySafety()]
     ),
+    .target(
+      name: "ShewchukPredicates",
+      path: "Tests/ShewchukPredicates",
+      exclude: ["predicates.c"]
+    ),
     .testTarget(
       name: "RobustPredicatesTests",
-      dependencies: ["RobustPredicates"],
+      dependencies: ["RobustPredicates", "ShewchukPredicates"],
       resources: [.copy("StagedPredicates")],
       swiftSettings: [.strictMemorySafety()]
     ),
