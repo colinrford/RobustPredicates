@@ -8,8 +8,7 @@
 
 import Testing
 
-/// The oracle is checked against Int128, an independent exact formalism, on
-/// inputs small enough for Int128 to hold.
+/// The oracle is checked against Int128 on inputs small enough for it to hold.
 @Suite("Dyadic oracle")
 struct DyadicTests {
 

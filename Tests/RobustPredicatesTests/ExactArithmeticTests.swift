@@ -10,7 +10,7 @@ import Testing
 @testable import RobustPredicates
 
 /// Nonoverlapping and increasing in magnitude, with zeros eliminated except a
-/// lone zero (Shewchuk 1997, §2.3).
+/// lone zero (Shewchuk 1997, §2.1, §2.4).
 private func isWellFormed(_ e: [Double]) -> Bool {
   if e.count <= 1 { return true }
   guard !e.contains(0) else { return false }
@@ -123,13 +123,13 @@ struct ExactArithmeticTests {
   }
   
   @Test(arguments: [90 as UInt64])
-  func expansionSignIsTheSignOfTheValue(seed: UInt64) {
+  func mostSignificantComponentHasTheSignOfTheValue(seed: UInt64) {
     var rng = SplitMix64(seed: seed)
     for _ in 0..<1000 {
       let e = randomExpansion(&rng, terms: 4)
       let f = randomExpansion(&rng, terms: 4)
       let value = expansionSum(e, expansionNegate(f))
-      let sign = expansionSign(value)
+      let sign = mostSignificantComponent(value)
       #expect((sign > 0 ? 1 : sign < 0 ? -1 : 0) == (Dyadic(sum: e) - Dyadic(sum: f)).signum)
     }
   }
@@ -142,7 +142,7 @@ struct ExactArithmeticTests {
       let e = randomExpansion(&rng, terms: 4)
       let f = randomExpansion(&rng, terms: 4)
       let g = expansionSum(e, f)
-      #expect(expansionSign(expansionSum(expansionSum(g, expansionNegate(e)), expansionNegate(f))) == 0)
+      #expect(mostSignificantComponent(expansionSum(expansionSum(g, expansionNegate(e)), expansionNegate(f))) == 0)
     }
   }
 }

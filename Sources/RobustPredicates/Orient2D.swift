@@ -23,7 +23,7 @@ func orient2dExact(_ a: SIMD2<Double>, _ b: SIMD2<Double>, _ c: SIMD2<Double>) -
   let bcx = twoDiffE(b.x, c.x), bcy = twoDiffE(b.y, c.y)
   let left = expansionProduct(acx, bcy)
   let right = expansionProduct(acy, bcx)
-  return expansionSign(expansionSum(left, expansionNegate(right)))
+  return mostSignificantComponent(expansionSum(left, expansionNegate(right)))
 }
 
 /// Shewchuk 1997, §4.3, Table 1.

@@ -103,8 +103,9 @@ func expansionProduct(_ e: [Double], _ f: [Double]) -> [Double] {
   return acc
 }
 
-/// The largest nonzero component, which carries the expansion's sign; 0 if the expansion is zero.
-func expansionSign(_ e: [Double]) -> Double {
+/// The most significant nonzero component, whose sign is the expansion's (Shewchuk 1997, §2.8);
+/// 0 if the expansion is zero.
+func mostSignificantComponent(_ e: [Double]) -> Double {
   for c in e.reversed() where c != 0 { return c }
   return 0
 }
