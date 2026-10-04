@@ -21,6 +21,20 @@ private struct Agreement<Outcome: Hashable> {
   }
 }
 
+/// The Kettner grid and the near-collinear grids.
+private func orient2dInputs() -> [(SIMD2<Double>, SIMD2<Double>, SIMD2<Double>)] {
+  let q = SIMD2(12.0, 12.0), r = SIMD2(24.0, 24.0)
+  var inputs = ulpGrid(from: SIMD2(0.5, 0.5), size: 256).map { ($0, q, r) }
+  for seed: UInt64 in 101...103 {
+    var rng = SplitMix64(seed: seed)
+    for _ in 0..<20 {
+      let (a, b, c0) = nearCollinearTriple(&rng)
+      inputs += ulpGrid(from: c0, size: 16).map { (a, b, $0) }
+    }
+  }
+  return inputs
+}
+
 // The same near-degenerate and degenerate inputs as the oracle tests, checked
 // against Shewchuk's predicates.c.
 @Suite("predicates.c")
@@ -28,22 +42,25 @@ struct ShewchukTests {
 
   @Test func orient2dAgrees() {
     var t = Agreement<Orientation>()
-    let q = SIMD2(12.0, 12.0), r = SIMD2(24.0, 24.0)
-    for p in ulpGrid(from: SIMD2(0.5, 0.5), size: 256) {
-      t.record(orient2d(p, q, r), shewchuk: shewchukOrient2d(p, q, r), naive: naiveOrient2d(p, q, r))
-    }
-    for seed: UInt64 in 101...103 {
-      var rng = SplitMix64(seed: seed)
-      for _ in 0..<20 {
-        let (a, b, c0) = nearCollinearTriple(&rng)
-        for c in ulpGrid(from: c0, size: 16) {
-          t.record(orient2d(a, b, c), shewchuk: shewchukOrient2d(a, b, c), naive: naiveOrient2d(a, b, c))
-        }
-      }
+    for (a, b, c) in orient2dInputs() {
+      t.record(orient2d(a, b, c), shewchuk: shewchukOrient2d(a, b, c), naive: naiveOrient2d(a, b, c))
     }
     #expect(t.disagreements == 0)
     #expect(t.outcomes == [.ccw, .collinear, .cw])
     #expect(t.naiveWrong > 0)
+  }
+
+  // Each stage returns its own approximation, so a wrong bound or stage
+  // changes the value even when the sign survives.
+  @Test func orient2dAdaptMatchesBitForBit() {
+    var mismatches = 0
+    for (a, b, c) in orient2dInputs() {
+      let detsum = abs((a.x - c.x) * (b.y - c.y)) + abs((a.y - c.y) * (b.x - c.x))
+      let ours = orient2dAdapt(a, b, c, detsum: detsum)
+      let theirs = shewchukOrient2dAdapt(a, b, c, detsum: detsum)
+      if ours.bitPattern != theirs.bitPattern { mismatches += 1 }
+    }
+    #expect(mismatches == 0)
   }
 
   @Test func inCircleAgrees() {

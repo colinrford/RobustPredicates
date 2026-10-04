@@ -17,6 +17,11 @@ double incircle(double *pa, double *pb, double *pc, double *pd)
 double insphere(double *pa, double *pb, double *pc, double *pd, double *pe)
   __attribute__((swift_name("inSphereC(_:_:_:_:_:)")));
 
+// Stages B to D of orient2d, called when stage A can't decide.
+
+double orient2dadapt(double *pa, double *pb, double *pc, double detsum)
+  __attribute__((swift_name("orient2dAdaptC(_:_:_:detsum:)")));
+
 // Exact without filtering or adaptivity, for timing.
 
 double orient2dslow(double *pa, double *pb, double *pc)
