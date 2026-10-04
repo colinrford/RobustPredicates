@@ -34,7 +34,7 @@ func inCircleExact(
   let aTerm = expansionProduct(lift(adx, ady), cross(bdx, bdy, cdx, cdy))
   let bTerm = expansionProduct(lift(bdx, bdy), cross(cdx, cdy, adx, ady))
   let cTerm = expansionProduct(lift(cdx, cdy), cross(adx, ady, bdx, bdy))
-  return expansionSign(expansionSum(expansionSum(aTerm, bTerm), cTerm))
+  return mostSignificantComponent(expansionSum(expansionSum(aTerm, bTerm), cTerm))
 }
 
 /// Shewchuk 1997, §4.4, Table 5.
