@@ -17,4 +17,15 @@ double incircle(double *pa, double *pb, double *pc, double *pd)
 double insphere(double *pa, double *pb, double *pc, double *pd, double *pe)
   __attribute__((swift_name("inSphereC(_:_:_:_:_:)")));
 
+// Exact without filtering or adaptivity, for timing.
+
+double orient2dslow(double *pa, double *pb, double *pc)
+  __attribute__((swift_name("orient2dSlowC(_:_:_:)")));
+
+double orient3dslow(double *pa, double *pb, double *pc, double *pd)
+  __attribute__((swift_name("orient3dSlowC(_:_:_:_:)")));
+
+double incircleslow(double *pa, double *pb, double *pc, double *pd)
+  __attribute__((swift_name("inCircleSlowC(_:_:_:_:)")));
+
 #endif
