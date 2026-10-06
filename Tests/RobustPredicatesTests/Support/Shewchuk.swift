@@ -34,6 +34,14 @@ func shewchukInCircle(
   return CirclePosition(sign: unsafe inCircleC(&pa, &pb, &pc, &pd))
 }
 
+func shewchukInCircleAdapt(
+  _ a: SIMD2<Double>, _ b: SIMD2<Double>, _ c: SIMD2<Double>, _ d: SIMD2<Double>, permanent: Double
+) -> Double {
+  _ = initialized
+  var pa = [a.x, a.y], pb = [b.x, b.y], pc = [c.x, c.y], pd = [d.x, d.y]
+  return unsafe inCircleAdaptC(&pa, &pb, &pc, &pd, permanent: permanent)
+}
+
 func shewchukOrient3d(
   _ a: SIMD3<Double>, _ b: SIMD3<Double>, _ c: SIMD3<Double>, _ d: SIMD3<Double>
 ) -> PlaneSide {
