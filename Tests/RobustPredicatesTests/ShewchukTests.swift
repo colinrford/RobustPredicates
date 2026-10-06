@@ -35,6 +35,39 @@ private func orient2dInputs() -> [(SIMD2<Double>, SIMD2<Double>, SIMD2<Double>)]
   return inputs
 }
 
+/// The square-corner grid, the near-cocircular grids, the rectangle corners, and
+/// grids around the fourth corner of rectangles whose sides mix magnitudes, so
+/// coordinate differences round and stage D of the adaptive inCircle runs.
+private func inCircleInputs() -> [(SIMD2<Double>, SIMD2<Double>, SIMD2<Double>, SIMD2<Double>)] {
+  let a = SIMD2(1.0, 1.0), b = SIMD2(3.0, 1.0), c = SIMD2(3.0, 3.0)
+  var inputs = ulpGrid(from: SIMD2(1.0, 3.0), size: 64).map { (a, b, c, $0) }
+  for seed: UInt64 in 121...123 {
+    var rng = SplitMix64(seed: seed)
+    for _ in 0..<20 {
+      let (a, b, c, d0) = nearCocircularQuad(&rng)
+      inputs += ulpGrid(from: d0, size: 16).map { (a, b, c, $0) }
+    }
+  }
+  for w in 1...6 {
+    for h in 1...6 {
+      inputs.append((SIMD2(0.0, 0.0), SIMD2(Double(w), 0.0), SIMD2(Double(w), Double(h)), SIMD2(0.0, Double(h))))
+    }
+  }
+  for seed: UInt64 in 124...126 {
+    var rng = SplitMix64(seed: seed)
+    for _ in 0..<20 {
+      let x0 = randomDouble(&rng, exponents: -20...0), x1 = randomDouble(&rng, exponents: 0...20)
+      let y0 = randomDouble(&rng, exponents: -20...0), y1 = randomDouble(&rng, exponents: 0...20)
+      let a = SIMD2(x0, y0), b = SIMD2(x1, y0), c = SIMD2(x1, y1)
+      // Rotated so each tail is nonzero somewhere.
+      for d in ulpGrid(from: SIMD2(x0, y1), size: 4) {
+        inputs += [(a, b, c, d), (b, c, a, d), (c, a, b, d)]
+      }
+    }
+  }
+  return inputs
+}
+
 // The same near-degenerate and degenerate inputs as the oracle tests, checked
 // against Shewchuk's predicates.c.
 @Suite("predicates.c")
@@ -65,29 +98,28 @@ struct ShewchukTests {
 
   @Test func inCircleAgrees() {
     var t = Agreement<CirclePosition>()
-    let a = SIMD2(1.0, 1.0), b = SIMD2(3.0, 1.0), c = SIMD2(3.0, 3.0)
-    for d in ulpGrid(from: SIMD2(1.0, 3.0), size: 64) {
+    for (a, b, c, d) in inCircleInputs() {
       t.record(inCircle(a, b, c, d), shewchuk: shewchukInCircle(a, b, c, d), naive: naiveInCircle(a, b, c, d))
-    }
-    for seed: UInt64 in 121...123 {
-      var rng = SplitMix64(seed: seed)
-      for _ in 0..<20 {
-        let (a, b, c, d0) = nearCocircularQuad(&rng)
-        for d in ulpGrid(from: d0, size: 16) {
-          t.record(inCircle(a, b, c, d), shewchuk: shewchukInCircle(a, b, c, d), naive: naiveInCircle(a, b, c, d))
-        }
-      }
-    }
-    for w in 1...6 {
-      for h in 1...6 {
-        let a = SIMD2(0.0, 0.0), b = SIMD2(Double(w), 0.0)
-        let c = SIMD2(Double(w), Double(h)), d = SIMD2(0.0, Double(h))
-        t.record(inCircle(a, b, c, d), shewchuk: shewchukInCircle(a, b, c, d), naive: naiveInCircle(a, b, c, d))
-      }
     }
     #expect(t.disagreements == 0)
     #expect(t.outcomes == [.inside, .on, .outside])
     #expect(t.naiveWrong > 0)
+  }
+
+  @Test func inCircleAdaptMatchesBitForBit() {
+    var mismatches = 0
+    for (a, b, c, d) in inCircleInputs() {
+      let adx = a.x - d.x, ady = a.y - d.y
+      let bdx = b.x - d.x, bdy = b.y - d.y
+      let cdx = c.x - d.x, cdy = c.y - d.y
+      let permanent = (abs(bdx * cdy) + abs(cdx * bdy)) * (adx * adx + ady * ady)
+        + (abs(cdx * ady) + abs(adx * cdy)) * (bdx * bdx + bdy * bdy)
+        + (abs(adx * bdy) + abs(bdx * ady)) * (cdx * cdx + cdy * cdy)
+      let ours = inCircleAdapt(a, b, c, d, permanent: permanent)
+      let theirs = shewchukInCircleAdapt(a, b, c, d, permanent: permanent)
+      if ours.bitPattern != theirs.bitPattern { mismatches += 1 }
+    }
+    #expect(mismatches == 0)
   }
 
   @Test func orient3dAgrees() {
