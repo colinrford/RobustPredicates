@@ -27,6 +27,11 @@ double orient2dadapt(double *pa, double *pb, double *pc, double detsum)
 double incircleadapt(double *pa, double *pb, double *pc, double *pd, double permanent)
   __attribute__((swift_name("inCircleAdaptC(_:_:_:_:permanent:)")));
 
+// Stages B to D of orient3d.
+
+double orient3dadapt(double *pa, double *pb, double *pc, double *pd, double permanent)
+  __attribute__((swift_name("orient3dAdaptC(_:_:_:_:permanent:)")));
+
 // Exact without filtering or adaptivity, for timing.
 
 double orient2dslow(double *pa, double *pb, double *pc)
