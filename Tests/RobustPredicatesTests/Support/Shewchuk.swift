@@ -49,3 +49,11 @@ func shewchukOrient3d(
   var pa = [a.x, a.y, a.z], pb = [b.x, b.y, b.z], pc = [c.x, c.y, c.z], pd = [d.x, d.y, d.z]
   return PlaneSide(sign: unsafe orient3dC(&pa, &pb, &pc, &pd))
 }
+
+func shewchukOrient3dAdapt(
+  _ a: SIMD3<Double>, _ b: SIMD3<Double>, _ c: SIMD3<Double>, _ d: SIMD3<Double>, permanent: Double
+) -> Double {
+  _ = initialized
+  var pa = [a.x, a.y, a.z], pb = [b.x, b.y, b.z], pc = [c.x, c.y, c.z], pd = [d.x, d.y, d.z]
+  return unsafe orient3dAdaptC(&pa, &pb, &pc, &pd, permanent: permanent)
+}
