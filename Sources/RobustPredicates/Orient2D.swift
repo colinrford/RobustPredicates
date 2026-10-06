@@ -58,9 +58,9 @@ func orient2dAdapt(_ a: SIMD2<Double>, _ b: SIMD2<Double>, _ c: SIMD2<Double>, d
   let bExp = [b0, b1, b2, b3]
 
   var det = estimate(bExp)
-  var errbound = ccwErrBoundB * detsum
-  if ((det >= errbound) || (-det >= errbound)) {
-    return det;
+  var errBound = ccwErrBoundB * detsum
+  if ((det >= errBound) || (-det >= errBound)) {
+    return det
   }
 
   let acxtail = twoDiffTail(a.x, c.x, acx)
@@ -69,12 +69,12 @@ func orient2dAdapt(_ a: SIMD2<Double>, _ b: SIMD2<Double>, _ c: SIMD2<Double>, d
   let bcytail = twoDiffTail(b.y, c.y, bcy)
 
   if ((acxtail == 0.0) && (acytail == 0.0) && (bcxtail == 0.0) && (bcytail == 0.0)) {
-    return det;
+    return det
   }
 
-  errbound = ccwErrBoundC * detsum + resultErrBound * abs(det)
+  errBound = ccwErrBoundC * detsum + resultErrBound * abs(det)
   det += (acx * bcytail + bcy * acxtail) - (acy * bcxtail + bcx * acytail)
-  if ((det >= errbound) || (-det >= errbound)) {
+  if ((det >= errBound) || (-det >= errBound)) {
     return det
   }
 
