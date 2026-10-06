@@ -49,8 +49,8 @@ func twoProd(_ a: Double, _ b: Double) -> (hi: Double, lo: Double) {
   return (p, (-p).addingProduct(a, b))
 }
 
-/* Macros for summing expansions of various fixed lengths.  These are all    */
-/*   unrolled versions of Expansion_Sum().                                   */
+// MARK: Translated C Macros for summing expansions of various fixed lengths.
+// These are all unrolled versions of Expansion_Sum()
 
 /// placeholder
 @inlinable
@@ -60,12 +60,22 @@ func twoOneSum(_ a1: Double, _ a0: Double, _ b: Double) -> (Double, Double, Doub
   return (x2, x1, x0)
 }
 
-/// placeholder;
+/// placeholder
 @inlinable
 func twoOneDiff(_ a1: Double, _ a0: Double, _ b: Double) -> (Double, Double, Double) {
   let (i, x0) = twoDiff(a0, b)
   let (x2, x1) = twoSum(a1, i)
   return (x2, x1, x0)
+}
+
+/// placeholder
+@inlinable
+func twoOneProd(_ a1: Double, _ a0: Double, _ b: Double) -> (Double, Double, Double, Double) {
+  let (i, x0) = twoProd(a0, b)
+  let (j, z) = twoProd(a1, b)
+  let (k, x1) = twoSum(i, z)
+  let (x3, x2) = twoSum(j, k)
+  return (x3, x2, x1, x0)
 }
 
 /// placeholder
@@ -83,45 +93,6 @@ func twoTwoDiff(_ a1: Double, _ a0: Double, _ b1: Double, _ b0: Double) -> (Doub
   let (x3, x2, x1) = twoOneDiff(j, z, b1)
   return (x3, x2, x1, x0)
 }
-
-/*
-@inlinable
-Four_One_Sum(a3, a2, a1, a0, b, x4, x3, x2, x1, x0) \
-  Two_One_Sum(a1, a0, b , _j, x1, x0); \
-  Two_One_Sum(a3, a2, _j, x4, x3, x2)
-
-@inlinable
-Four_Two_Sum(a3, a2, a1, a0, b1, b0, x5, x4, x3, x2, x1, x0) \
-  Four_One_Sum(a3, a2, a1, a0, b0, _k, _2, _1, _0, x0); \
-  Four_One_Sum(_k, _2, _1, _0, b1, x5, x4, x3, x2, x1)
-
-@inlinable
-Four_Four_Sum(a3, a2, a1, a0, b4, b3, b1, b0, x7, x6, x5, x4, x3, x2, \
-                      x1, x0) \
-  Four_Two_Sum(a3, a2, a1, a0, b1, b0, _l, _2, _1, _0, x1, x0); \
-  Four_Two_Sum(_l, _2, _1, _0, b4, b3, x7, x6, x5, x4, x3, x2)
-
-@inlinable
-Eight_One_Sum(a7, a6, a5, a4, a3, a2, a1, a0, b, x8, x7, x6, x5, x4, \
-                      x3, x2, x1, x0) \
-  Four_One_Sum(a3, a2, a1, a0, b , _j, x3, x2, x1, x0); \
-  Four_One_Sum(a7, a6, a5, a4, _j, x8, x7, x6, x5, x4)
-
-@inlinable
-Eight_Two_Sum(a7, a6, a5, a4, a3, a2, a1, a0, b1, b0, x9, x8, x7, \
-                      x6, x5, x4, x3, x2, x1, x0) \
-  Eight_One_Sum(a7, a6, a5, a4, a3, a2, a1, a0, b0, _k, _6, _5, _4, _3, _2, \
-                _1, _0, x0); \
-  Eight_One_Sum(_k, _6, _5, _4, _3, _2, _1, _0, b1, x9, x8, x7, x6, x5, x4, \
-                x3, x2, x1)
-
-@inlinable
-Eight_Four_Sum(a7, a6, a5, a4, a3, a2, a1, a0, b4, b3, b1, b0, x11, \
-                       x10, x9, x8, x7, x6, x5, x4, x3, x2, x1, x0) \
-  Eight_Two_Sum(a7, a6, a5, a4, a3, a2, a1, a0, b1, b0, _l, _6, _5, _4, _3, \
-                _2, _1, _0, x1, x0); \
-  Eight_Two_Sum(_l, _6, _5, _4, _3, _2, _1, _0, b4, b3, x11, x10, x9, x8, \
-                x7, x6, x5, x4, x3, x2) */
 
 // MARK: - Expansions
 // An expansion is an array of Doubles whose exact sum is the value it represents:
@@ -159,6 +130,7 @@ func expansionSum(_ e: [Double], _ f: [Double]) -> [Double] {
   return h
 }
 
+/// placeholder
 func expansionNegate(_ e: [Double]) -> [Double] { e.map { -$0 } }
 
 /// Expansion × scalar (Shewchuk's scale-expansion with zero elimination).
